@@ -1,0 +1,28 @@
+#!/bin/bash
+# Calendarium — quick expense entry
+# Usage:
+#   cal-add 149.90 groceries "Rema 1000"
+#   cal-add 149.90 groceries                    (no comment)
+#   cal-add -d 2026-02-10 200 bills "Strøm"    (backlog date)
+
+SCRIPT_DIR="$HOME/Work/Scripts/Python/Calendar/src"
+
+# If first arg is -d, grab the date and shift past it
+if [[ "$1" == "-d" ]]; then
+    DATE_FLAG="--date $2"
+    shift 2
+fi
+
+# Remaining args: amount category [comment]
+AMOUNT="$1"
+CATEGORY="$2"
+COMMENT="$3"
+
+if [[ -z "$AMOUNT" || -z "$CATEGORY" ]]; then
+    echo "Usage: cal-add [-d YYYY-MM-DD] AMOUNT CATEGORY [COMMENT]"
+    echo "  cal-add 149.90 groceries \"Rema 1000\""
+    echo "  cal-add -d 2026-02-10 200 bills \"Strøm\""
+    exit 1
+fi
+
+python3 "$SCRIPT_DIR/main.py" --add "$CATEGORY" --amount "$AMOUNT" ${DATE_FLAG} ${COMMENT:+--comment "$COMMENT"}
